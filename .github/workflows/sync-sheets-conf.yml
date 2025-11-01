@@ -3,7 +3,7 @@ name: Sync Google Sheets to Confluence
 on:
   # Ejecutar automáticamente cada 5 min
   schedule:
-    - cron: "5 * * * *"
+    - cron: "*/5 * * * *"
 
   # Permitir ejecución manual desde GitHub
   workflow_dispatch:
