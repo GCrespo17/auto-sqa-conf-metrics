@@ -1,0 +1,55 @@
+name: Sync Google Sheets to Confluence
+
+on:
+  # Ejecutar automáticamente cada 5 min
+  schedule:
+    - cron: "5 * * * *"
+
+  # Permitir ejecución manual desde GitHub
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Instalar dependencias
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Crear archivo de credenciales de Google
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        run: |
+          echo "$GOOGLE_CREDENTIALS" > credentials.json
+
+      - name: Ejecutar sincronización
+        env:
+          CONFLUENCE_URL: ${{ secrets.CONFLUENCE_URL }}
+          CONFLUENCE_USER: ${{ secrets.CONFLUENCE_USER }}
+          CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+          # Configura tus hojas aquí
+          SHEET_1_NAME: ${{ secrets.SHEET_1_NAME }}
+          SHEET_1_PAGE_ID: ${{ secrets.SHEET_1_PAGE_ID }}
+          SHEET_2_NAME: ${{ secrets.SHEET_2_NAME }}
+          SHEET_2_PAGE_ID: ${{ secrets.SHEET_2_PAGE_ID }}
+          # Agrega más hojas según necesites
+          # SHEET_3_NAME: ${{ secrets.SHEET_3_NAME }}
+          # SHEET_3_PAGE_ID: ${{ secrets.SHEET_3_PAGE_ID }}
+        run: |
+          python sync_metrics.py
+
+      - name: Limpiar credenciales
+        if: always()
+        run: |
+          rm -f credentials.json
