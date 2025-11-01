@@ -44,10 +44,10 @@ jobs:
           SHEET_2_NAME: ${{ secrets.SHEET_2_NAME }}
           SHEET_2_PAGE_ID: ${{ secrets.SHEET_2_PAGE_ID }}
           # Agrega más hojas según necesites
-          # SHEET_3_NAME: ${{ secrets.SHEET_3_NAME }}
-          # SHEET_3_PAGE_ID: ${{ secrets.SHEET_3_PAGE_ID }}
+          SHEET_3_NAME: ${{ secrets.SHEET_3_NAME }}
+          SHEET_3_PAGE_ID: ${{ secrets.SHEET_3_PAGE_ID }}
         run: |
-          python sync_metrics.py
+          python scripts/sync_metrics.py
 
       - name: Limpiar credenciales
         if: always()
